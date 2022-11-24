@@ -1,11 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='testgear-adapter-pytest',
+    name='testgear-python-commons',
     version='2.0.6',
-    description='Pytest adapter for Test Gear',
-    long_description=open('README.md', "r").read(),
-    long_description_content_type="text/markdown",
+    description='Python commons for Test Gear',
     url='https://github.com/testgear-tms/adapters-python/',
     author='Integration team',
     author_email='integrations@test-gear.io',
@@ -16,10 +14,10 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10'
     ],
-    py_modules=['testgear_adapter_pytest'],
+    py_modules=['testgear', 'testgear_python_commons'],
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
-    install_requires=['pytest', 'pytest-xdist', 'testgear-python-commons>=2,<3'],
-    entry_points={'pytest11': ['testgear_adapter_pytest = testgear_adapter_pytest.plugin']}
+    install_requires=['pluggy', 'testgear-api-client>=2,<3']
 )
