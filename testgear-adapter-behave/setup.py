@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='testgear-adapter-behave',
-    version='2.0.8',
+    version='2.0.9',
     description='Behave adapter for Test Gear',
     long_description=open('README.md', "r").read(),
     long_description_content_type="text/markdown",
@@ -22,6 +22,6 @@ setup(
     package_dir={'': 'src'},
     install_requires=[
         'behave',
-        'testgear-python-commons>=2,<3',
+        'testgear-python-commons==2.0.9',
         'attrs'],
 )
