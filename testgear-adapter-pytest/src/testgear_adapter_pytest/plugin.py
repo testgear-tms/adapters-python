@@ -1,7 +1,8 @@
 import pytest
 
-from testgear_python_commons.services import TmsPluginManager
 from testgear_adapter_pytest.listener import TmsListener
+
+from testgear_python_commons.services import TmsPluginManager
 
 
 def pytest_addoption(parser):
@@ -77,6 +78,13 @@ def pytest_addoption(parser):
         action="store",
         dest="set_config_file",
         metavar="tmsConfigFile",
+        help='Set custom name of configuration file'
+    )
+    parser.getgroup('testgear').addoption(
+        '--tmsCertValidation',
+        action="store",
+        dest="set_cert_validation",
+        metavar="false",
         help='Set custom name of configuration file'
     )
 
