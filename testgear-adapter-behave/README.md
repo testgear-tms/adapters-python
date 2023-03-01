@@ -4,6 +4,13 @@
 
 ## Getting Started
 
+### Compatibility
+
+| Test Gear | Adapter |
+|-----------|---------|
+| 3.5       | 2.0     |
+| 4.0       | 2.1     |
+
 ### Installation
 
 ```
@@ -65,6 +72,8 @@ pip install testgear-adapter-behave
           test run.
         * 1 - in this mode, the adapter sends all results to the test run without filtering.
         * 2 - in this mode, the adapter creates a new test run and sends results to the new test run.
+    
+    * `certValidation` - it enables/disables certificate validation. `certValidation` is optional.
 
     * `tmsProxy` - it enables debug mode. `tmsProxy` is optional.
 
@@ -93,6 +102,8 @@ You can use environment variables (environment variables take precedence over fi
 
 * `TMS_PROXY` - it enables debug mode. `TMS_PROXY` is optional.
 
+* `TMS_CERT_VALIDATION` - it enables/disables certificate validation. `TMS_CERT_VALIDATION` is optional.
+
 #### Command line
 
 You also can CLI variables (CLI variables take precedence over environment variables):
@@ -118,6 +129,8 @@ You also can CLI variables (CLI variables take precedence over environment varia
 
 * `tmsProxy` - it enables debug mode. `tmsProxy` is optional.
 
+* `tmsCertValidation` - it enables/disables certificate validation. `tmsCertValidation` is optional.
+
 #### Examples
 
 Launch with a connection_config.ini file in the root directory of the project:
@@ -131,8 +144,11 @@ Launch with command-line parameters:
 ```
 $ behave -f testgear_adapter_behave.formatter:AdapterFormatter -D tmsUrl=<url> -D tmsPrivateToken=<token> -D
 tmsProjectId=<id> -D tmsConfigurationId=<id> -D tmsTestRunId=<optional id> -D tmsAdapterMode=<optional> -D
-tmsTestRunName=<optional name> -D tmsProxy='{"http":"http://localhost:8888","https":"http://localhost:8888"}'
+tmsTestRunName=<optional name> -D tmsProxy='{"http":"http://localhost:8888","https":"http://localhost:8888"}' -D tmsCertValidation=<optional boolean>
 ```
+
+If you want to enable debug mode then
+see [How to enable debug logging?](https://github.com/testgear-tms/adapters-python/tree/main/testgear-python-commons)
 
 ### Tags
 
@@ -141,8 +157,8 @@ Use tags to specify information about autotest.
 Description of tags:
 
 - `WorkItemIds` - linking an autotest to a test case.
-- `DisplayName` - name of the autotest in Test Gear.
-- `ExternalId` - ID of the autotest within the project in Test Gear.
+- `DisplayName` - name of the autotest in TMS.
+- `ExternalId` - ID of the autotest within the project in TMS.
 - `Title` - title in the autotest card.
 - `Description` - description in the autotest card.
 - `Labels` - tags in the autotest card.

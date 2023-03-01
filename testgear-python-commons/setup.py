@@ -1,8 +1,8 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name='testgear-python-commons',
-    version='2.0.9',
+    version='2.1.0',
     description='Python commons for Test Gear',
     url='https://github.com/testgear-tms/adapters-python/',
     author='Integration team',
@@ -19,5 +19,5 @@ setup(
     py_modules=['testgear', 'testgear_python_commons'],
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
-    install_requires=['pluggy', 'testgear-api-client==2.0.2']
+    install_requires=['pluggy', 'testgear-api-client==3.0.0']
 )
