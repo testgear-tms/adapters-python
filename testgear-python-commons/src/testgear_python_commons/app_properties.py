@@ -1,9 +1,9 @@
 import configparser
-import os
-import warnings
 import logging
+import os
+import re
+import warnings
 
-from testgear_python_commons.services.utils import Utils
 from testgear_python_commons.models.adapter_mode import AdapterMode
 
 
@@ -51,16 +51,23 @@ class AppProperties:
 
             if parser.has_section('testgear'):
                 for key, value in parser.items('testgear'):
-                    properties[key] = Utils.search_in_environ(value)
+                    properties[key] = cls.__search_in_environ(value)
 
-            if parser.has_section('debug') and parser.has_option('debug', 'tmsproxy'):
-                properties['tmsproxy'] = Utils.search_in_environ(
-                    parser.get('debug', 'tmsproxy'))
+            if parser.has_section('debug'):
+                if parser.has_option('debug', 'tmsproxy'):
+                    properties['tmsproxy'] = cls.__search_in_environ(
+                        parser.get('debug', 'tmsproxy'))
+
+                if parser.has_option('debug', '__dev'):
+                    properties['logs'] = cls.__search_in_environ(
+                        parser.get('debug', '__dev')).lower()
 
             if 'privatetoken' in properties:
-                warnings.warn('The configuration file specifies a private token. It is not safe. Use TMS_PRIVATE_TOKEN environment variable',
-                              category=Warning,
-                              stacklevel=2)
+                warnings.warn(
+                    'The configuration file specifies a private token. It is not safe.'
+                    ' Use TMS_PRIVATE_TOKEN environment variable',
+                    category=Warning,
+                    stacklevel=2)
                 warnings.simplefilter('default', Warning)
 
         return properties
@@ -93,6 +100,9 @@ class AppProperties:
         if hasattr(option, 'set_adapter_mode') and option.set_adapter_mode:
             cli_properties['adaptermode'] = option.set_adapter_mode
 
+        if hasattr(option, 'set_cert_validation') and option.set_cert_validation:
+            cli_properties['certvalidation'] = option.set_cert_validation
+
         return cli_properties
 
     @classmethod
@@ -123,6 +133,9 @@ class AppProperties:
         if f'{cls.__env_prefix}_ADAPTER_MODE' in os.environ.keys():
             env_properties['adaptermode'] = os.environ.get(f'{cls.__env_prefix}_ADAPTER_MODE')
 
+        if f'{cls.__env_prefix}_CERT_VALIDATION' in os.environ.keys():
+            env_properties['certvalidation'] = os.environ.get(f'{cls.__env_prefix}_CERT_VALIDATION')
+
         return env_properties
 
     @staticmethod
@@ -138,7 +151,8 @@ class AppProperties:
                 AdapterMode.USE_FILTER,
                 None):
             if properties.get('testrunid') is None:
-                logging.error(f'Adapter mode "{adapter_mode if adapter_mode else "0"}" is enabled. The test run ID is needed, but it was not found!')
+                logging.error(f'Adapter mode "{adapter_mode if adapter_mode else "0"}" is enabled. '
+                              f'The test run ID is needed, but it was not found!')
                 raise SystemExit
         else:
             logging.error(f'Unknown adapter mode "{adapter_mode}"!')
@@ -155,3 +169,13 @@ class AppProperties:
         if properties.get('configurationid') is None:
             logging.error('Configuration ID was not found!')
             raise SystemExit
+
+        if properties.get('certvalidation'):
+            properties['certvalidation'] = properties['certvalidation'].lower()
+
+    @staticmethod
+    def __search_in_environ(var_name: str):
+        if re.fullmatch(r'{[a-zA-Z_]\w*}', var_name) and var_name[1:-1] in os.environ:
+            return os.environ[var_name[1:-1]]
+
+        return var_name

@@ -1,20 +1,15 @@
+import hashlib
+import logging
 import os
 import re
 import warnings
-import hashlib
-import logging
+
+from testgear_python_commons.services.logger import adapter_logger
 
 
 class Utils:
-
     @staticmethod
-    def search_in_environ(variable: str):
-        if re.fullmatch(r'{[a-zA-Z_]\w*}', variable) and variable[1:-1] in os.environ:
-            return os.environ[variable[1:-1]]
-
-        return variable
-
-    @staticmethod
+    @adapter_logger
     def autotests_parser(data_autotests: list, configuration: str):
         resolved_autotests = []
 
@@ -47,6 +42,7 @@ class Utils:
         return url
 
     @staticmethod
+    @adapter_logger
     def form_test(item):
         data = {
             'externalID': item.test_external_id,
@@ -102,6 +98,7 @@ class Utils:
         return data
 
     @staticmethod
+    @adapter_logger
     def __get_parameters_from(item):
         if hasattr(item, 'array_parametrize_mark_id'):
             test_parameters = {}
@@ -111,12 +108,14 @@ class Utils:
         return None
 
     @staticmethod
+    @adapter_logger
     def __get_properties_from(item):
         if hasattr(item, 'test_properties'):
             return item.test_properties
         return None
 
     @staticmethod
+    @adapter_logger
     def __get_classname_from(item):
         i = item.function.__qualname__.find('.')
         if i != -1:
@@ -124,6 +123,7 @@ class Utils:
         return None
 
     @staticmethod
+    @adapter_logger
     def __set_links(item, data):
         params = Utils.get_params(item)
 
@@ -146,6 +146,7 @@ class Utils:
             data['links'] = item.function.test_links
 
     @staticmethod
+    @adapter_logger
     def _get_title_from(item):
         if not hasattr(item.function, 'test_title'):
             return None
@@ -159,6 +160,7 @@ class Utils:
         return item.function.test_title
 
     @staticmethod
+    @adapter_logger
     def __get_description_from(item):
         if not hasattr(item.function, 'test_description'):
             return None
@@ -172,6 +174,7 @@ class Utils:
         return item.function.test_description
 
     @staticmethod
+    @adapter_logger
     def __set_labels(item, data):
         if hasattr(item, 'array_parametrize_mark_id'):
             for one_label in item.function.test_labels:
@@ -198,13 +201,13 @@ class Utils:
                 })
 
     @staticmethod
+    @adapter_logger
     def __set_workitems_id(item, data):
         if hasattr(item, 'array_parametrize_mark_id'):
             result, param_id = Utils.mass_param_attribute_collector(
                 item.function.test_workitems_id[0], item.own_markers,
                 item.array_parametrize_mark_id, item.index)
-            if param_id is not None and item.function.test_workitems_id[0][
-                                        1:-1] in \
+            if param_id is not None and item.function.test_workitems_id[0][1:-1] in \
                     item.name[(item.name.find('[') + 1):(item.name.rfind(']'))].split(
                         '-')[param_id]:
                 data['workItemsID'] = result
@@ -214,6 +217,7 @@ class Utils:
             data['workItemsID'] = item.function.test_workitems_id
 
     @staticmethod
+    @adapter_logger
     def param_attribute_collector(attribute, run_param):
         result = attribute
         param_keys = re.findall(r"\{(.*?)\}", attribute)
@@ -245,19 +249,20 @@ class Utils:
         return result
 
     @staticmethod
+    @adapter_logger
     def mass_param_attribute_collector(attribute, marks, parametrize_id, index):
-        for ID in parametrize_id:
+        for param_index in parametrize_id:
             param_names = []
-            for param_name in marks[ID].args[0].split(','):
+            for param_name in marks[param_index].args[0].split(','):
                 param_names.append(param_name.strip())
             if attribute[1:-1] != '' and attribute[1:-1] in param_names:
-                param_id = marks[ID].args[0].split(', ').index(attribute[1:-1])
-                return marks[ID].args[1][index][param_id], param_id
+                param_id = marks[param_index].args[0].split(', ').index(attribute[1:-1])
+                return marks[param_index].args[1][index][param_id], param_id
         return attribute, None
 
     @staticmethod
     def deprecated(message):
-        def deprecated_decorator(func):
+        def deprecated_decorator(func):  # noqa: N802
             def deprecated_func(*args, **kwargs):
                 warnings.warn(
                     '"{}" is no longer acceptable to compute time between versions.\n{}'.format(func.__name__, message),
@@ -271,11 +276,13 @@ class Utils:
         return deprecated_decorator
 
     @staticmethod
-    def getHash(value: str):
+    @adapter_logger
+    def get_hash(value: str):
         md = hashlib.sha256(bytes(value, encoding='utf-8'))
         return md.hexdigest()
 
     @staticmethod
+    @adapter_logger
     def get_params(item):
         params = {}
 
