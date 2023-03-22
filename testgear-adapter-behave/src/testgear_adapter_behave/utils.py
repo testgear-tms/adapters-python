@@ -1,7 +1,7 @@
 from .models.option import Option
-from .tags_parser import parse_tags
 from .models.tags import TagType
 from .scenario_parser import get_scenario_external_id
+from .tags_parser import parse_tags
 
 
 def parse_userdata(userdata):
@@ -36,6 +36,12 @@ def parse_userdata(userdata):
 
     if 'tmsConfigFile' in userdata:
         option.set_config_file = userdata['tmsConfigFile']
+
+    if 'tmsCertValidation' in userdata:
+        option.set_cert_validation = userdata['tmsCertValidation']
+
+    if 'tmsAutomaticCreationTestCases' in userdata:
+        option.set_automatic_creation_test_cases = userdata['tmsAutomaticCreationTestCases']
 
     return option
 

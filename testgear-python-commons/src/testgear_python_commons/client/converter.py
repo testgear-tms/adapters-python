@@ -1,16 +1,20 @@
 from testgear_api_client.models import (
+    AutoTestStepModel,
+    AvailableTestResultOutcome,
+    AttachmentPutModelAutoTestStepResultsModel,
     AutoTestPostModel,
     AutoTestPutModel,
+    AutoTestResultsForTestRunModel,
     LinkPostModel,
     LinkPutModel,
-    LinkType,
-    AutoTestResultsForTestRunModel,
-    AttachmentPutModelAutoTestStepResultsModel)
+    LinkType
+)
+from testgear_python_commons.services.logger import adapter_logger
 
 
 class Converter:
-
     @classmethod
+    @adapter_logger
     def test_result_to_autotest_post_model(
             cls,
             test_result: dict,
@@ -19,18 +23,20 @@ class Converter:
             test_result['externalID'],
             project_id,
             test_result['autoTestName'],
-            steps=test_result['steps'],
-            setup=test_result['setUp'],
-            teardown=test_result['tearDown'],
+            steps=cls.step_results_to_autotest_steps_model(test_result['steps']),
+            setup=cls.step_results_to_autotest_steps_model(test_result['setUp']),
+            teardown=cls.step_results_to_autotest_steps_model(test_result['tearDown']),
             namespace=test_result['namespace'],
             classname=test_result['classname'],
             title=test_result['title'],
             description=test_result['description'],
             links=cls.links_to_links_post_model(test_result['links']),
-            labels=test_result['labels']
+            labels=test_result['labels'],
+            should_create_work_item=test_result['automaticCreationTestCases']
         )
 
     @classmethod
+    @adapter_logger
     def test_result_to_autotest_put_model(
             cls,
             test_result: dict,
@@ -40,9 +46,9 @@ class Converter:
                 test_result['externalID'],
                 project_id,
                 test_result['autoTestName'],
-                steps=test_result['steps'],
-                setup=test_result['setUp'],
-                teardown=test_result['tearDown'],
+                steps=cls.step_results_to_autotest_steps_model(test_result['steps']),
+                setup=cls.step_results_to_autotest_steps_model(test_result['setUp']),
+                teardown=cls.step_results_to_autotest_steps_model(test_result['tearDown']),
                 namespace=test_result['namespace'],
                 classname=test_result['classname'],
                 title=test_result['title'],
@@ -55,9 +61,9 @@ class Converter:
                 test_result['externalID'],
                 project_id,
                 test_result['autoTestName'],
-                steps=test_result['steps'],
-                setup=test_result['setUp'],
-                teardown=test_result['tearDown'],
+                steps=cls.step_results_to_autotest_steps_model(test_result['steps']),
+                setup=cls.step_results_to_autotest_steps_model(test_result['setUp']),
+                teardown=cls.step_results_to_autotest_steps_model(test_result['tearDown']),
                 namespace=test_result['namespace'],
                 classname=test_result['classname'],
                 title=test_result['title'],
@@ -67,6 +73,7 @@ class Converter:
             )
 
     @classmethod
+    @adapter_logger
     def test_result_to_testrun_result_post_model(
             cls,
             test_result: dict,
@@ -74,10 +81,13 @@ class Converter:
         return AutoTestResultsForTestRunModel(
             configuration_id,
             test_result['externalID'],
-            test_result['outcome'],
-            step_results=test_result['stepResults'],
-            setup_results=test_result['setUpResults'],
-            teardown_results=test_result['tearDownResults'],
+            AvailableTestResultOutcome(test_result['outcome']),
+            step_results=cls.step_results_to_attachment_put_model_autotest_step_results_model(
+                test_result['stepResults']),
+            setup_results=cls.step_results_to_attachment_put_model_autotest_step_results_model(
+                test_result['setUpResults']),
+            teardown_results=cls.step_results_to_attachment_put_model_autotest_step_results_model(
+                test_result['tearDownResults']),
             traces=test_result['traces'],
             attachments=test_result['attachments'],
             parameters=test_result['parameters'],
@@ -90,6 +100,7 @@ class Converter:
         )
 
     @staticmethod
+    @adapter_logger
     def link_to_link_post_model(
             url: str,
             title: str,
@@ -110,6 +121,7 @@ class Converter:
             )
 
     @staticmethod
+    @adapter_logger
     def link_to_link_put_model(
             url: str,
             title: str,
@@ -130,6 +142,7 @@ class Converter:
             )
 
     @classmethod
+    @adapter_logger
     def links_to_links_post_model(cls, links: list):
         post_model_links = []
 
@@ -144,6 +157,7 @@ class Converter:
         return post_model_links
 
     @classmethod
+    @adapter_logger
     def links_to_links_put_model(cls, links: list):
         put_model_links = []
 
@@ -157,23 +171,80 @@ class Converter:
 
         return put_model_links
 
+    @classmethod
+    @adapter_logger
+    def step_results_to_autotest_steps_model(cls, steps: list):
+        autotest_model_steps = []
+
+        for step in steps:
+            autotest_model_steps.append(
+                cls.step_result_to_autotest_step_model(
+                    step['title'],
+                    step['description'],
+                    cls.step_results_to_autotest_steps_model(
+                        step.get('steps', [])
+                    )
+                )
+            )
+
+        return autotest_model_steps
+
     @staticmethod
-    def step_result_to_attachment_put_model_autotest_step_results_model(
+    @adapter_logger
+    def step_result_to_autotest_step_model(
             title: str,
-            description: str,
-            outcome: str,
-            duration: str,
-            parameters,
-            attachments,
-            started_on=None,
-            completed_on=None):
-        return AttachmentPutModelAutoTestStepResultsModel(
+            description: str = None,
+            steps: list = None):
+        return AutoTestStepModel(
             title=title,
             description=description,
+            steps=steps)
+
+    @classmethod
+    @adapter_logger
+    def step_results_to_attachment_put_model_autotest_step_results_model(cls, steps: list):
+        autotest_model_step_results = []
+
+        for step in steps:
+            autotest_model_step_results.append(
+                cls.step_result_to_attachment_put_model_autotest_step_results_model(
+                    step['title'],
+                    step['outcome'],
+                    step['description'],
+                    step['duration'],
+                    step['parameters'],
+                    step['attachments'],
+                    None,
+                    None,
+                    cls.step_results_to_attachment_put_model_autotest_step_results_model(
+                        step.get('step_results', [])
+                    )
+                )
+            )
+
+        return autotest_model_step_results
+
+    @staticmethod
+    @adapter_logger
+    def step_result_to_attachment_put_model_autotest_step_results_model(
+            title: str,
+            outcome: str,
+            description: str = None,
+            duration: str = None,
+            parameters: list = None,
+            attachments: list = None,
+            started_on: str = None,
+            completed_on: str = None,
+            step_results: list = None
+            ):
+        return AttachmentPutModelAutoTestStepResultsModel(
+            title=title,
+            outcome=AvailableTestResultOutcome(outcome),
+            description=description,
             duration=duration,
-            outcome=outcome,
             parameters=parameters,
             attachments=attachments,
             started_on=started_on,
-            completed_on=completed_on
+            completed_on=completed_on,
+            step_results=step_results
         )

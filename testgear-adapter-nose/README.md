@@ -1,4 +1,4 @@
-# Test Gear TMS adapter for Behave
+# Test Gear TMS adapter for Nose
 
 ![Test Gear](https://raw.githubusercontent.com/testgear-tms/adapters-python/master/images/banner.png)
 
@@ -14,7 +14,7 @@
 ### Installation
 
 ```
-pip install testgear-adapter-behave
+pip install testgear-adapter-nose
 ```
 
 ## Usage
@@ -33,6 +33,7 @@ pip install testgear-adapter-behave
     testRunId = <optional id>
     testRunName = <optional name>
     adapterMode = <optional>
+    certValidation = <optional boolean>
     
     # This section are optional. It enables debug mode.
     [debug]
@@ -77,6 +78,12 @@ pip install testgear-adapter-behave
 
     * `tmsProxy` - it enables debug mode. `tmsProxy` is optional.
 
+3. Create **unittest.cfg** file in the root directory of the project:
+   ```
+    [unittest]
+    plugins = testgear_adapter_nose.plugin
+    ```
+
 #### ENV
 
 You can use environment variables (environment variables take precedence over file variables):
@@ -104,65 +111,33 @@ You can use environment variables (environment variables take precedence over fi
 
 * `TMS_CERT_VALIDATION` - it enables/disables certificate validation. `TMS_CERT_VALIDATION` is optional.
 
-#### Command line
-
-You also can CLI variables (CLI variables take precedence over environment variables):
-
-* `tmsUrl` - location of the TMS instance.
-
-* `tmsPrivateToken` - API secret key.
-
-* `tmsProjectId` - ID of a project in TMS instance.
-
-* `tmsConfigurationId` - ID of a configuration in TMS instance.
-
-* `tmsAdapterMode` - adapter mode. Default value - 0.
-
-* `tmsTestRunId` - ID of the created test-run in TMS instance. `tmsTestRunId` is optional. If it is not provided, it is
-  created automatically.
-
-* `tmsTestRunName` - name of the new test-run.`tmsTestRunName` is optional. If it is not provided, it is created
-  automatically.
-
-* `tmsConfigFile` - name of the configuration file. `tmsConfigFile` is optional. If it is not provided, it is used
-  default file name.
-
-* `tmsProxy` - it enables debug mode. `tmsProxy` is optional.
-
-* `tmsCertValidation` - it enables/disables certificate validation. `tmsCertValidation` is optional.
-
 #### Examples
 
 Launch with a connection_config.ini file in the root directory of the project:
 
 ```
-$ behave -f testgear_adapter_behave.formatter:AdapterFormatter
-```
-
-Launch with command-line parameters:
-
-```
-$ behave -f testgear_adapter_behave.formatter:AdapterFormatter -D tmsUrl=<url> -D tmsPrivateToken=<token> -D
-tmsProjectId=<id> -D tmsConfigurationId=<id> -D tmsTestRunId=<optional id> -D tmsAdapterMode=<optional> -D
-tmsTestRunName=<optional name> -D tmsProxy='{"http":"http://localhost:8888","https":"http://localhost:8888"}' -D tmsCertValidation=<optional boolean>
+$ nose2 --testgear
 ```
 
 If you want to enable debug mode then
 see [How to enable debug logging?](https://github.com/testgear-tms/adapters-python/tree/main/testgear-python-commons)
 
-### Tags
+### Decorators
 
-Use tags to specify information about autotest.
+Decorators can be used to specify information about autotest.
 
-Description of tags:
+Description of decorators:
 
-- `WorkItemIds` - linking an autotest to a test case.
-- `DisplayName` - name of the autotest in TMS.
-- `ExternalId` - ID of the autotest within the project in TMS.
-- `Title` - title in the autotest card.
-- `Description` - description in the autotest card.
-- `Labels` - tags in the autotest card.
-- `Links` - links in the autotest card.
+- `testgear.workItemIds` - linking an autotest to a test case
+- `testgear.displayName` - name of the autotest in the TMS system (can be replaced with documentation strings)
+- `testgear.externalId` - ID of the autotest within the project in the TMS System
+- `testgear.title` - title in the autotest card
+- `testgear.description` - description in the autotest card
+- `testgear.labels` - tags in the work item
+- `testgear.link` - links in the autotest card
+- `testgear.step` - the designation of the step called in the body of the test or other step
+
+All decorators support the use of parameterization attributes
 
 Description of methods:
 
@@ -173,98 +148,66 @@ Description of methods:
 
 ### Examples
 
-#### Simple Test
+#### Simple test
 
 ```py
+import pytest
 import testgear
-from behave import given
-from behave import then
-from behave import when
 
 
-@given("I authorize on the portal")
-def authorization(context):
-    with testgear.step("I set login"):
-        pass
-    with testgear.step("I set password"):
-        pass
+# Test with a minimal set of decorators
+@testgear.externalId('Simple_autotest2')
+def test_2():
+    """Simple autotest 2"""
+    assert oneStep()
+    assert twoStep()
 
 
-@when("I create a project")
-def create_project(context):
-    pass
+@testgear.step
+def oneStep():
+    assert oneOneStep()
+    assert oneTwoStep()
+    return True
 
 
-@when("I open the project")
-def enter_project(context):
-    pass
+@testgear.step
+def twoStep():
+    return True
 
 
-@when("I create a section")
-def create_section(context):
-    testgear.addLinks(
-        title='component_dump.dmp',
-        type=testgear.LinkType.RELATED,
-        url='https://dumps.example.com/module/some_module_dump',
-        description='Description'
-    )
+@testgear.step('step 1.1', 'description')
+def oneOneStep():
+    return True
 
 
-@then("I create a test case")
-def create_test_case(context):
-    testgear.addAttachments('pictures/picture.jpg')
-```
-
-```buildoutcfg
-Feature: Sample
-
-  Background:
-    Given I authorize on the portal
-
-  @ExternalId=failed_with_all_annotations
-  @DisplayName=Failed_test_with_all_annotations
-  @WorkItemIds=123
-  @Title=Title_in_the_autotest_card
-  @Description=Test_with_all_annotations
-  @Labels=Tag1,Tag2
-  @Links={"url":"https://dumps.example.com/module/repository","title":"Repository","description":"Example_of_repository","type":"Repository"}
-  Scenario: Create new project, section and test case
-    When I create a project
-    And I open the project
-    And I create a section
-    Then I create a test case
+@testgear.step('step 2')
+def oneTwoStep():
+    return True
 ```
 
 #### Parameterized test
 
 ```py
-from behave import when
-from behave import then
+# Parameterized test with a full set of decorators
+from os.path import join, dirname
 
+import testgear
+from nose2.tools import params
 
-@when("Summing {left:d}+{right:d}")
-def step_impl(context, left, right):
-    context.sum = left + right
-
-
-@then("Result is {result:d}")
-def step_impl(context, result):
-    assert context.sum == result
-
-```
-
-```buildoutcfg
-Feature: Rule
-  Tests that use Rule
-
-  Scenario Outline: Summing
-    When Summing <left>+<right>
-    Then Result is <result>
-
-    Examples:
-      | left | right | result |
-      | 1    | 1     | 3      |
-      | 9    | 9     | 18     |
+@params(1, 2, 3)
+@testgear.workItemIds(627)
+@testgear.externalId('param {num}')
+@testgear.displayName('param {num}')
+@testgear.title('Test with params')
+@testgear.description('E2E_autotest')
+@testgear.labels('parameters', 'test')
+@testgear.links(url='https://dumps.example.com/module/JCP-777')
+@testgear.links(url='https://dumps.example.com/module/JCP-777',
+              title='JCP-777',
+              type=testgear.LinkType.RELATED,
+              description='Description of JCP-777')
+def test_nums(num):
+    assert num < 4
 ```
 
 # Contributing

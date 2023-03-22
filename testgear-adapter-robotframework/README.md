@@ -3,6 +3,13 @@
 
 ## Getting Started
 
+### Compatibility
+
+| Test Gear | Adapter |
+|-----------|---------|
+| 3.5       | 2.0     |
+| 4.0       | 2.1     |
+
 ### Installation
 ```
 pip install testgear-adapter-robotframework
@@ -24,6 +31,7 @@ pip install testgear-adapter-robotframework
     testRunId = <optional id>
     testRunName = <optional name>
     adapterMode = <optional>
+    certValidation = <optional boolean>
     
     # This section are optional. It enables debug mode.
     [debug]
@@ -60,6 +68,8 @@ pip install testgear-adapter-robotframework
         * 0 - in this mode, the adapter filters tests by test run ID and configuration ID, and sends the results to the test run.
         * 1 - in this mode, the adapter sends all results to the test run without filtering.
         * 2 - in this mode, the adapter creates a new test run and sends results to the new test run.
+   
+    * `certValidation` - it enables/disables certificate validation. `certValidation` is optional.
     
     * `tmsProxy` - it enables debug mode. `tmsProxy` is optional.
     
@@ -87,6 +97,8 @@ You can use environment variables (environment variables take precedence over fi
 
 * `TMS_PROXY` - it enables debug mode. `TMS_PROXY` is optional.
 
+* `TMS_CERT_VALIDATION` - it enables/disables certificate validation. `TMS_CERT_VALIDATION` is optional.
+
 #### Command line
 
 You also can use CLI variables, that sent to Robot Framework via `-v` option  (CLI variables take precedence over environment variables):
@@ -109,6 +121,8 @@ You also can use CLI variables, that sent to Robot Framework via `-v` option  (C
 
 * `tmsProxy` - it enables debug mode. `tmsProxy` is optional.
 
+* `tmsCertValidation` - it enables/disables certificate validation. `tmsCertValidation` is optional.
+
 #### Examples
 
 Launch with a connection_config.ini file in the root directory of the project:
@@ -120,8 +134,10 @@ $ robot -v testgear <test directory>
 Launch with command-line parameters (parameters are case-insensitive):
 
 ```
-$ robot -v testgear -v tmsUrl:<url> -v tmsPrivateToken:<token> -v tmsProjectId:<id> -v tmsConfigurationId:<id> -v tmsTestRunId:<optional id> -v tmsTestRunName:<optional name> -v tmsProxy:'{"http":"http://localhost:8888","https":"http://localhost:8888"}' -v tmsConfigFile:<optional file> <test directory>
+$ robot -v testgear -v tmsUrl:<url> -v tmsPrivateToken:<token> -v tmsProjectId:<id> -v tmsConfigurationId:<id> -v tmsTestRunId:<optional id> -v tmsTestRunName:<optional name> -v tmsProxy:'{"http":"http://localhost:8888","https":"http://localhost:8888"}' -v tmsConfigFile:<optional file> -v tmsCertValidation:<optional boolean> <test directory>
 ```
+
+If you want to enable debug mode then see [How to enable debug logging?](https://github.com/testgear-tms/adapters-python/tree/main/testgear-python-commons)
 
 ### Tags
 
@@ -129,8 +145,8 @@ Tags can be used to specify information about autotest. Tags are space sensitive
 
 Description of tags:
 - `testgear.workItemsId` - linking an autotest to a test case
-- `testgear.displayName` - name of the autotest in the Test Gear system (default - name of test)
-- `testgear.externalId` - ID of the autotest within the project in the Test Gear System
+- `testgear.displayName` - name of the autotest in the TMS system (default - name of test)
+- `testgear.externalId` - ID of the autotest within the project in the TMS System
 - `testgear.title` - title in the autotest card (default - name of test)
 - `testgear.description` - description in the autotest card (default - documentation of test)
 - `testgear.links` - links in the autotest card

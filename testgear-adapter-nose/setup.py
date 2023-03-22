@@ -1,9 +1,11 @@
-from setuptools import find_packages, setup
+from setuptools import setup, find_packages
 
 setup(
-    name='testgear-python-commons',
+    name='testgear-adapter-nose',
     version='2.1.0',
-    description='Python commons for Test Gear',
+    description='Nose adapter for Test Gear',
+    long_description=open('README.md', "r").read(),
+    long_description_content_type="text/markdown",
     url='https://github.com/testgear-tms/adapters-python/',
     author='Integration team',
     author_email='integrations@test-gear.io',
@@ -14,10 +16,14 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10'
     ],
-    py_modules=['testgear', 'testgear_python_commons'],
+    py_modules=['testgear_adapter_nose'],
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
-    install_requires=['pluggy', 'testgear-api-client==3.0.0']
+    install_requires=['attrs', 'nose2', 'testgear-python-commons==2.1.0'],
+    entry_points={
+            'nose.plugins.0.10': [
+                'testgear_adapter_nose = testgear_adapter_nose.plugin:TmsPlugin',
+            ]
+    }
 )

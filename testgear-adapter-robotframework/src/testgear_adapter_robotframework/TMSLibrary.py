@@ -1,8 +1,9 @@
-from testgear_python_commons.services import AdapterManager
 from robot.libraries.BuiltIn import BuiltIn
 
-from .models import Option, Link
+from testgear_python_commons.services import AdapterManager
+
 from .listeners import AutotestAdapter, TestRunAdapter
+from .models import Link, Option
 
 
 def enabled(func):
@@ -10,13 +11,13 @@ def enabled(func):
         if self.enabled:
             return func(self, *args, **kwargs)
         else:
-            raise ImportError("testgear module should be enabled. Use '-v testgear' CLI option")
+            raise ImportError("TestGear module should be enabled. Use '-v testgear' CLI option")
 
     return wrapped
 
 
 class TMSLibrary:
-    """Library for exporting result to testgear.
+    """Library for exporting result to TestGear.
 
         = Table of contents =
 
@@ -24,7 +25,7 @@ class TMSLibrary:
 
         = Usage =
 
-        This library has several keyword, for example `Add Link`, adding links to result of test in testgear
+        This library has several keyword, for example `Add Link`, adding links to result of test in TestGear
 
         = Examples =
 
@@ -40,7 +41,8 @@ class TMSLibrary:
         self.enabled = built_in.get_variable_value("${testgear}", None) is not None
         if self.enabled:
             cli_params = ["tmsUrl", "tmsPrivateToken", "tmsProjectId",
-                          "tmsConfigurationId", "tmsTestRunId", "tmsTestRunName", "tmsAdapterMode", "tmsConfigFile"]
+                          "tmsConfigurationId", "tmsTestRunId", "tmsTestRunName",
+                          "tmsAdapterMode", "tmsConfigFile", "tmsCertValidation", "tmsAutomaticCreationTestCases"]
             option = Option(**{param: built_in.get_variable_value(f'${{{param}}}', None) for param in cli_params})
             self.adapter_manager = AdapterManager(option)
             pabot_index = built_in.get_variable_value('${PABOTQUEUEINDEX}', None)
@@ -64,7 +66,7 @@ class TMSLibrary:
             self.ROBOT_LIBRARY_LISTENER = [AutotestAdapter(self.adapter_manager), TestRunAdapter(self.adapter_manager)]
 
     @enabled
-    def add_link(self, url, type='Defect', title=None, description=None):
+    def add_link(self, url, type='Defect', title=None, description=None):  # noqa: A002,VNE003
         """
         Adds link to current test.
 

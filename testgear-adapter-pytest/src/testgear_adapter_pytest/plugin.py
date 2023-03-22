@@ -1,7 +1,8 @@
 import pytest
 
-from testgear_python_commons.services import TmsPluginManager
 from testgear_adapter_pytest.listener import TmsListener
+
+from testgear_python_commons.services import TmsPluginManager
 
 
 def pytest_addoption(parser):
@@ -78,6 +79,24 @@ def pytest_addoption(parser):
         dest="set_config_file",
         metavar="tmsConfigFile",
         help='Set custom name of configuration file'
+    )
+    parser.getgroup('testgear').addoption(
+        '--tmsCertValidation',
+        action="store",
+        dest="set_cert_validation",
+        metavar="false",
+        help='Set custom name of configuration file'
+    )
+    parser.getgroup('testgear').addoption(
+        '--tmsAutomaticCreationTestCases',
+        action="store",
+        dest="set_automatic_creation_test_cases",
+        metavar="false",
+        help="""
+        Set mode of automatic creation test cases (optional):
+        true - create a test case linked to the created autotest (not to the updated autotest)
+        false - not create a test case (Default)
+        """
     )
 
 
