@@ -11,13 +11,13 @@ def enabled(func):
         if self.enabled:
             return func(self, *args, **kwargs)
         else:
-            raise ImportError("testgear module should be enabled. Use '-v testgear' CLI option")
+            raise ImportError("TestGear module should be enabled. Use '-v testgear' CLI option")
 
     return wrapped
 
 
 class TMSLibrary:
-    """Library for exporting result to testgear.
+    """Library for exporting result to TestGear.
 
         = Table of contents =
 
@@ -25,7 +25,7 @@ class TMSLibrary:
 
         = Usage =
 
-        This library has several keyword, for example `Add Link`, adding links to result of test in TMS
+        This library has several keyword, for example `Add Link`, adding links to result of test in TestGear
 
         = Examples =
 
@@ -42,7 +42,7 @@ class TMSLibrary:
         if self.enabled:
             cli_params = ["tmsUrl", "tmsPrivateToken", "tmsProjectId",
                           "tmsConfigurationId", "tmsTestRunId", "tmsTestRunName",
-                          "tmsAdapterMode", "tmsConfigFile", "tmsCertValidation"]
+                          "tmsAdapterMode", "tmsConfigFile", "tmsCertValidation", "tmsAutomaticCreationTestCases"]
             option = Option(**{param: built_in.get_variable_value(f'${{{param}}}', None) for param in cli_params})
             self.adapter_manager = AdapterManager(option)
             pabot_index = built_in.get_variable_value('${PABOTQUEUEINDEX}', None)

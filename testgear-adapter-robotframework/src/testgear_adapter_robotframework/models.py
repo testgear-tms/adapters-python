@@ -125,7 +125,7 @@ class Autotest(Default):
                     elif isinstance(value, list):
                         self.workItemsID.extend([str(i) for i in value])
                     else:
-                        logger.error(f"[testgear] Wrong workitem format: {value}")
+                        logger.error(f"[TestGear] Wrong workitem format: {value}")
                 elif attr == 'links':
                     value = ast.literal_eval(value)
                     try:
@@ -134,7 +134,7 @@ class Autotest(Default):
                         elif isinstance(value, list):
                             self.links.extend([Link(**link) for link in value if isinstance(link, dict)])
                     except ValueError as e:
-                        logger.error(f"[testgear] Link Error: {e}")
+                        logger.error(f"[TestGear] Link Error: {e}")
                 elif attr == 'labels':
                     value = ast.literal_eval(value)
                     if isinstance(value, (str, int)):
@@ -142,7 +142,7 @@ class Autotest(Default):
                     elif isinstance(value, list):
                         self.labels.extend([Label(item) for item in value if isinstance(item, (str, int))])
                 else:
-                    logger.error(f"[testgear] Unknown attribute: {attr}")
+                    logger.error(f"[TestGear] Unknown attribute: {attr}")
         if not self.externalID:
             self.externalID = Utils.get_hash(attrs['longname'].split('.', 1)[-1])
 
@@ -203,3 +203,7 @@ class Option:
             self.set_adapter_mode = kwargs.get('tmsAdapterMode', None)
         if kwargs.get('tmsConfigFile', None):
             self.set_config_file = kwargs.get('tmsConfigFile', None)
+        if kwargs.get('tmsCertValidation', None):
+            self.set_cert_validation = kwargs.get('tmsCertValidation', None)
+        if kwargs.get('tmsAutomaticCreationTestCases', None):
+            self.set_automatic_creation_test_cases = kwargs.get('tmsAutomaticCreationTestCases', None)
