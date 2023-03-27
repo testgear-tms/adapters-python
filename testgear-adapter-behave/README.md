@@ -4,13 +4,6 @@
 
 ## Getting Started
 
-### Compatibility
-
-| Test Gear | Adapter |
-|-----------|---------|
-| 3.5       | 2.0     |
-| 4.0       | 2.1     |
-
 ### Installation
 
 ```
