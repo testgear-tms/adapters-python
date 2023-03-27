@@ -1,7 +1,7 @@
 # TestGear Python Integrations
 The repository contains new versions of adapters for python test frameworks.
 
-### Compatibility
+## Compatibility
 
 | TestGear | Adapter |
 |----------|---------|
