@@ -129,6 +129,8 @@ Description of decorators:
 - `testgear.labels` - tags in the work item
 - `testgear.link` - links in the autotest card
 - `testgear.step` - the designation of the step called in the body of the test or other step
+- `testgear.nameSpace` - directory in the TMS system (default - file's name of test)
+- `testgear.className` - subdirectory in the TMS system (default - class's name of test)
 
 All decorators support the use of parameterization attributes
 
