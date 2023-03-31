@@ -156,6 +156,8 @@ Description of tags:
 - `Description` - description in the autotest card.
 - `Labels` - tags in the autotest card.
 - `Links` - links in the autotest card.
+- `NameSpace` - directory in the TMS system (default - file's name of test)
+- `ClassName` - subdirectory in the TMS system (default - class's name of test)
 
 Description of methods:
 

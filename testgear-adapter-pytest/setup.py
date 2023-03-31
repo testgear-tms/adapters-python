@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='testgear-adapter-pytest',
-    version='2.1.0',
+    version='2.1.1',
     description='Pytest adapter for Test Gear',
     long_description=open('README.md', "r").read(),
     long_description_content_type="text/markdown",
@@ -20,6 +20,6 @@ setup(
     py_modules=['testgear_adapter_pytest'],
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
-    install_requires=['pytest', 'pytest-xdist', 'testgear-python-commons==2.1.0'],
+    install_requires=['pytest', 'pytest-xdist', 'testgear-python-commons==2.1.1'],
     entry_points={'pytest11': ['testgear_adapter_pytest = testgear_adapter_pytest.plugin']}
 )

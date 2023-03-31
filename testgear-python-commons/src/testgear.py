@@ -1,6 +1,8 @@
 from testgear_python_commons.decorators import (
     description,
     displayName,
+    nameSpace,
+    className,
     externalID,
     externalId,
     labels,
@@ -25,6 +27,8 @@ __all__ = [
     'externalID',
     'externalId',
     'displayName',
+    'nameSpace',
+    'className',
     'workItemID',
     'workItemIds',
     'title',

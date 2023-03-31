@@ -144,6 +144,8 @@ Description of tags:
 - `testgear.description` - description in the autotest card (default - documentation of test)
 - `testgear.links` - links in the autotest card
 - `testgear.labels` - labels in the autotest card
+- `testgear.nameSpace` - directory in the TMS system (default - file's name of test)
+- `testgear.className` - subdirectory in the TMS system (default - class's name of test)
 
 Description of methods:
 - `Add Links` - links in the autotest result
