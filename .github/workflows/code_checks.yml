@@ -20,8 +20,8 @@ jobs:
             '3.10'
         ]
         package: [
-            testit-adapter-pytest,
-            testit-python-commons
+            testgear-adapter-pytest,
+            testgear-python-commons
         ]
     steps:
       - uses: actions/checkout@v2
