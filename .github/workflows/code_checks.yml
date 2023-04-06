@@ -16,7 +16,10 @@ jobs:
             python-version: 3.6
         package: [
             testgear-adapter-pytest,
-            testgear-python-commons
+            testgear-python-commons,
+            testgear-adapter-robotframework,
+            testgear-adapter-behave,
+            testgear-adapter-nose
         ]
     steps:
       - uses: actions/checkout@v3
