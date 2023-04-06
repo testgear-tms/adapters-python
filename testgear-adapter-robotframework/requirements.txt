@@ -1,3 +1,0 @@
-attrs
-robotframework
-pytest >= 7.0.0
