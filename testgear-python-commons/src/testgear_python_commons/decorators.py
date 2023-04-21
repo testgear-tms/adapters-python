@@ -1,3 +1,5 @@
+import logging
+import types
 from functools import wraps
 
 from testgear_python_commons.services.logger import adapter_logger
@@ -15,9 +17,11 @@ def inner(function):
                            'callspec') and key not in function.callspec.params:
                     function.test_properties[key] = str(value)
         function(*args, **kwargs)
-        return function
 
-    return wrapper
+    if isinstance(function, types.FunctionType):
+        return wrapper
+
+    return function
 
 
 @Utils.deprecated('Use "workItemIds" instead.')
@@ -145,9 +149,9 @@ def links(url: str = None, title: str = None, type: str = None,  # noqa: A002,VN
                          'description': link['description'] if 'description' in link else None}
                     )
                 else:
-                    print(f'Link ({link}) can\'t be processed!')
+                    logging.warning(f'Link ({link}) can\'t be processed!')
         else:
-            print(f'Links for {function.__name__} can\'t be processed!\nPlease, set "url" or "links"!')
+            logging.warning(f'Links for {function.__name__} can\'t be processed!\nPlease, set "url" or "links"!')
         return inner(function)
 
     return outer
