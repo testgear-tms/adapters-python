@@ -3,8 +3,8 @@ import uuid
 
 from testgear_python_commons.client.api_client import ApiClientWorker
 from testgear_python_commons.client.client_configuration import ClientConfiguration
-from testgear_python_commons.services.adapter_manager_configuration import AdapterManagerConfiguration
 from testgear_python_commons.models.adapter_mode import AdapterMode
+from testgear_python_commons.services.adapter_manager_configuration import AdapterManagerConfiguration
 from testgear_python_commons.services.logger import adapter_logger
 
 
