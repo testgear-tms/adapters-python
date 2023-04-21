@@ -7,6 +7,7 @@ from testgear_python_commons.services import (
     Utils
 )
 
+
 class Step:
     step_stack = []
     steps_data = []

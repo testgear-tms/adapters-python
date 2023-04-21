@@ -52,7 +52,7 @@ def parse_scenario(scenario):
         # 'completed_on': None
     }
 
-    if TagType.EXTERNAL_ID in tags:
+    if TagType.TITLE in tags:
         executable_test['title'] = tags[TagType.TITLE]
 
     if TagType.DESCRIPTION in tags:
@@ -96,7 +96,7 @@ def get_scenario_namespace(scenario):
 def get_scenario_parameters(scenario):
     row = scenario._row
 
-    return {name: value for name, value in zip(row.headings, row.cells)} if row else None
+    return {name: value for name, value in zip(row.headings, row.cells)} if row else {}
 
 
 def get_scenario_status(scenario):
