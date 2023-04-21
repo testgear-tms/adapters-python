@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='testgear-adapter-robotframework',
-    version='2.1.1',
+    version='2.1.2',
     description='Robot Framework adapter for Test Gear',
     long_description=open('README.md', "r").read(),
     long_description_content_type="text/markdown",
@@ -20,5 +20,5 @@ setup(
     py_modules=['testgear_adapter_robotframework'],
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
-    install_requires=['attrs', 'robotframework', 'testgear-python-commons==2.1.1']
+    install_requires=['attrs', 'robotframework', 'testgear-python-commons==2.1.2']
 )
