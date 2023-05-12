@@ -43,14 +43,11 @@ jobs:
       - name: Build package
         working-directory: ${{ matrix.package }}
         run: |
-          paths=($(ls | grep 'testgear'))
-          for str in ${paths[@]}; do
-            python -m build -s -o ./dist $str
-          done
+          python -m build -s
       - name: Publish package for ${{ matrix.package }}
         uses: pypa/gh-action-pypi-publish@release/v1
-        working-directory: ${{ matrix.package }}
         with:
           skip-existing: true
           user: __token__
+          packages-dir: ${{ matrix.package }}/dist/
           password: ${{ secrets.PYPI_API_TOKEN }}
