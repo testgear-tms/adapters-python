@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='testgear-python-commons',
-    version='2.1.2',
+    version='2.1.3',
     description='Python commons for Test Gear',
     url='https://github.com/testgear-tms/adapters-python/',
     author='Integration team',
