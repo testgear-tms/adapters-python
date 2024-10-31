@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='testgear-python-commons',
-    version='2.2.0',
+    version='2.2.1',
     description='Python commons for Test Gear',
     long_description=open('README.md', "r").read(),
     long_description_content_type="text/markdown",
@@ -23,5 +23,5 @@ setup(
     py_modules=['testgear', 'testgear_python_commons'],
     packages=find_packages(where='src'),
     package_dir={'': 'src'},
-    install_requires=['pluggy', 'testgear-api-client==3.2.0']
+    install_requires=['pluggy', 'testgear-api-client==3.2.1']
 )
